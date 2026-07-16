@@ -31,8 +31,8 @@ quotes = [
     '"In mathematics, the art of proposing a question must be held of higher value than solving it." - Georg Cantor'
 ]
 
-# Randomly select four unique quotes
-q1, q2, q3, q4 = random.sample(quotes, 4)
+# Randomly select three unique quotes for specific locations
+q_sidebar, q_above, q_below = random.sample(quotes, 3)
 
 # 2. Sidebar
 with st.sidebar:
@@ -45,13 +45,13 @@ with st.sidebar:
     except:
         st.error("🔴 Neural Core: OFFLINE")
     st.metric(label="Solutions Executed", value=st.session_state.problems_solved)
+    st.markdown("---")
+    st.caption(f"*{q_sidebar}*")
 
-# 3. Header with Expanded Dynamic Quotes
-st.markdown(f"<p style='text-align: center; font-style: italic; color: #777;'>{q1}</p>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; font-style: italic; color: #555;'>{q2}</p>", unsafe_allow_html=True)
+# 3. Header with Quotes
+st.markdown(f"<p style='text-align: center; font-style: italic; color: #777;'>{q_above}</p>", unsafe_allow_html=True)
 st.title("🏛️ The Archimedean Interface")
-st.markdown(f"<p style='text-align: center; font-style: italic; color: #555;'>{q3}</p>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; font-style: italic; color: #777;'>{q4}</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; font-style: italic; color: #555;'>{q_below}</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 # 4. Tabs
@@ -87,19 +87,7 @@ with tab2:
 with tab3:
     st.subheader("📚 A-Level/IGCSE Syllabus Formulas")
     
-    # Pedagogical diagrams triggered for deeper understanding
-    st.markdown("### Core Physics Visuals")
-    st.write("Visualizing the relationship between variables is key to mastering these concepts.")
-    
-    col_img1, col_img2 = st.columns(2)
-    with col_img1:
-        st.markdown("")
-    with col_img2:
-        st.markdown("")
-    
-    st.markdown("---")
-    
-    # Comprehensive Syllabus Library (No Search Bar)
+    # Library (No Search Bar)
     syllabus = {
         "📐 Pure Math": [("Quadratic", "$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$"), ("Sine Rule", "$\\frac{a}{\\sin A} = \\frac{b}{\\sin B}$"), ("Differentiation", "$\\frac{d}{dx}x^n = nx^{n-1}$")],
         "🚀 Kinematics": [("Displacement", "$s = ut + 0.5at^2$"), ("Velocity Squared", "$v^2 = u^2 + 2as$"), ("Angular Velocity", "$\\omega = 2\\pi f$")],
