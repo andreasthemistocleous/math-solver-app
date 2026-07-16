@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 import random
+import requests
 
 # 1. Page Configuration
 st.set_page_config(
@@ -12,6 +13,7 @@ st.set_page_config(
 )
 
 # Initialize Session State
+if "authenticated" not in st.session_state: st.session_state.authenticated = False
 if "history" not in st.session_state: st.session_state.history = []
 if "problems_solved" not in st.session_state: st.session_state.problems_solved = 0
 if "chat_history" not in st.session_state: st.session_state.chat_history = []
@@ -31,8 +33,41 @@ quotes = [
     '"In mathematics, the art of proposing a question must be held of higher value than solving it." - Georg Cantor'
 ]
 
-# Randomly select three unique quotes for specific locations
+# Randomly select three unique quotes
 q_sidebar, q_above, q_below = random.sample(quotes, 3)
+
+# --- AUTHENTICATION GATE ---
+if not st.session_state.authenticated:
+    st.markdown("<h1 style='text-align: center; font-family: serif; letter-spacing: 2px;'>ARCHIMEDEAN</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: gray;'>Professional Mathematical Workspace</p>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    col_a, col_b, col_c = st.columns([1, 2, 1])
+    with col_b:
+        st.subheader("🔐 Access Locked")
+        st.write("Please enter your License Key to access the Archimedean engine.")
+        user_key = st.text_input("License Key:", type="password")
+        
+        if st.button("Unlock Engine"):
+            # Gumroad Verification
+            payload = {
+                "product_permalink": st.secrets["gumroad_product_permalink"],
+                "license_key": user_key
+            }
+            response = requests.post("https://api.gumroad.com/v2/licenses/verify", data=payload)
+            data = response.json()
+            
+            if data.get("success"):
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("Invalid license key.")
+        
+        st.markdown("---")
+        st.markdown("[Purchase a License Key](https://your-gumroad-link-here.com)")
+    st.stop()
+
+# --- MAIN APP (Only runs if authenticated) ---
 
 # 2. Sidebar
 with st.sidebar:
@@ -73,7 +108,7 @@ with tab1:
                 st.session_state.problems_solved += 1
             except Exception as e:
                 if "429" in str(e):
-                    output_container.warning("⚠️ System is busy. Please wait 20 seconds before your next question.")
+                    output_container.warning("⚠️ System busy. Please wait 20s.")
                 else:
                     output_container.error(f"Fault: {e}")
 
@@ -89,7 +124,7 @@ with tab2:
                 st.chat_message("assistant").markdown(response.text)
             except Exception as e:
                 if "429" in str(e):
-                    st.warning("⚠️ System busy. Please wait 20 seconds.")
+                    st.warning("⚠️ System busy. Please wait 20s.")
                 else:
                     st.error("Error connecting to Oracle.")
 
