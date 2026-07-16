@@ -67,7 +67,7 @@ with tab1:
             height=120,
             placeholder="e.g., Define boundaries for integration, or detail physical forces..."
         )
-        solve_button = st.button("⚡ Execute Proof", use_container_width=True, type="primary")
+        solve_button = st.button("⚡ Execute Solution", use_container_width=True, type="primary")
 
     with col_output:
         st.subheader("Terminal Output")
